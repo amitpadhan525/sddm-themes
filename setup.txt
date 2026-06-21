@@ -1,0 +1,87 @@
+PHANTOM SDDM THEME - SETUP & INSTALLATION GUIDE
+================================================
+
+This document provides details on package dependencies, manual installation steps,
+configuration guidelines, and troubleshooting advice for setting up the Phantom SDDM Theme.
+
+1. PREREQUISITES / DEPENDENCIES
+------------------------------
+Phantom SDDM is designed for Qt6-based SDDM. To display and function correctly,
+the following packages must be installed depending on your Linux distribution:
+
+* Arch Linux / Manjaro / Artix / EndeavourOS:
+  - sddm
+  - qt6-5compat (Qt6 compatibility module for graphical effects)
+  - qt6-declarative (provides Qt6 QML engine support)
+  - qt6-svg (optional, provides SVG icon support)
+
+* Fedora / Nobara:
+  - sddm
+  - qt6-qt5compat
+  - qt6-qtdeclarative
+  - qt6-qtsvg
+
+* Debian / Ubuntu / Pop!_OS / Linux Mint:
+  - sddm
+  - qml6-module-qt5compat-graphicaleffects
+  - qml6-module-qtqml
+  - qml6-module-qtquick-layouts
+  - qml6-module-qtquick-controls
+
+2. MANUAL INSTALLATION STEPS
+----------------------------
+If you prefer not to use the automated `setup.sh` installer, you can install the
+theme manually by following these steps:
+
+Step 1: Ensure you are in the project's root directory.
+Step 2: Create a directory named `phantom-sddm` inside `/usr/share/sddm/themes/`:
+        sudo mkdir -p /usr/share/sddm/themes/phantom-sddm
+
+Step 3: Copy the required files from this repository to the new directory:
+        sudo cp -r CustomComboBox.qml Main.qml metadata.desktop theme.conf assets fonts /usr/share/sddm/themes/phantom-sddm/
+
+        Optionally, you can also copy the LICENSE and phantom-sddm.png preview image:
+        sudo cp LICENSE phantom-sddm.png /usr/share/sddm/themes/phantom-sddm/
+
+Step 4: Set the appropriate permissions so that the SDDM manager user can read the files:
+        sudo find /usr/share/sddm/themes/phantom-sddm -type d -exec chmod 755 {} \;
+        sudo find /usr/share/sddm/themes/phantom-sddm -type f -exec chmod 644 {} \;
+
+3. ENABLING THE THEME
+---------------------
+To set Phantom SDDM as the current active theme, write a config file in
+`/etc/sddm.conf.d/`:
+
+1. Ensure `/etc/sddm.conf.d` exists:
+   sudo mkdir -p /etc/sddm.conf.d
+
+2. Create/edit `/etc/sddm.conf.d/10-theme.conf` and populate it with the following text:
+   [Theme]
+   Current=phantom-sddm
+
+4. TESTING THE THEME
+--------------------
+You can test the theme inside a window on your desktop (without logging out).
+Run the following command while your display server is running:
+
+* For Qt6-based SDDM installations (recommended):
+  sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/phantom-sddm
+
+* For Qt5-based SDDM installations:
+  sddm-greeter --test-mode --theme /usr/share/sddm/themes/phantom-sddm
+
+5. CUSTOMIZATION
+----------------
+You can customize the theme properties in:
+`/usr/share/sddm/themes/phantom-sddm/theme.conf`
+
+Available parameters:
+- background: Path to the background image file (e.g. assets/background.png)
+- blur: Set to "true" (with quotes) or true (boolean) to enable background blur. Use "false" or false to disable.
+- recursiveBlurRadius: Intensity of the blur effect (default: 8)
+- recursiveBlurLoops: Number of blur passes (default: 4)
+
+To change the background image:
+1. Copy your desired wallpaper into `/usr/share/sddm/themes/phantom-sddm/assets/`
+2. Update the background property in `theme.conf`:
+   background=assets/your-wallpaper.png
