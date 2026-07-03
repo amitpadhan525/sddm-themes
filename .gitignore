@@ -1,0 +1,4 @@
+# SDDM Themes Collection gitignore
+
+# Ignore local theme ZIP packages (uploaded to GitHub Releases)
+zips/

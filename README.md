@@ -10,6 +10,8 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ![Nebula SDDM Theme Preview](screenshots/nebula.png)
 
+[📥 Download Nebula Theme (ZIP)](https://github.com/amitpadhan525/sddm-themes/releases/latest/download/nebula.zip)
+
 ---
 
 ## 2. Phantom Red
@@ -17,3 +19,5 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 **Phantom Red** is a dark, tactical, gaming-inspired SDDM login theme. It features a symmetric layout with hooded skull soldiers with glowing red eyes, set against a dark smoky background with floating red embers. The UI highlights a glowing massive digital clock, dynamic user greetings, and a bottom control dock.
 
 ![Phantom Red SDDM Theme Preview](screenshots/phantom-red.png)
+
+[📥 Download Phantom Red Theme (ZIP)](https://github.com/amitpadhan525/sddm-themes/releases/latest/download/phantom-red.zip)
