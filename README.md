@@ -21,3 +21,9 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 ![Phantom Red SDDM Theme Preview](screenshots/phantom-red.png)
 
 [📥 Download Phantom Red Theme (ZIP)](https://github.com/amitpadhan525/sddm-themes/releases/latest/download/phantom-red.zip)
+
+---
+
+## ⚙️ Installation
+
+For step-by-step instructions on how to install and activate any of these themes, please refer to the [Installation Guide](file:///home/amit/github/sddm-themes/installation.md).
