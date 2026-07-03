@@ -1,0 +1,61 @@
+PHANTOM RED THEME - SETUP & INSTALLATION GUIDE
+==============================================
+
+1. PREREQUISITES / DEPENDENCIES
+------------------------------
+Phantom Red is designed for Qt6-based SDDM. To display and function correctly,
+the following packages must be installed depending on your Linux distribution:
+
+* Arch Linux / Manjaro / Artix / EndeavourOS:
+  Command: sudo pacman -S sddm qt6-5compat qt6-declarative qt6-svg
+  Packages:
+  - sddm
+  - qt6-5compat (Qt6 compatibility module for graphical effects)
+  - qt6-declarative (provides Qt6 QML engine support)
+  - qt6-svg (optional, provides SVG icon support)
+
+* Fedora / Nobara:
+  Command: sudo dnf install sddm qt6-qt5compat qt6-qtdeclarative qt6-qtsvg
+  Packages:
+  - sddm
+  - qt6-qt5compat
+  - qt6-qtdeclarative
+  - qt6-qtsvg
+
+* Debian / Ubuntu / Pop!_OS / Linux Mint:
+  Command: sudo apt install sddm qml6-module-qt5compat-graphicaleffects qml6-module-qtqml qml6-module-qtquick-layouts qml6-module-qtquick-controls
+  Packages:
+  - sddm
+  - qml6-module-qt5compat-graphicaleffects
+  - qml6-module-qtqml
+  - qml6-module-qtquick-layouts
+  - qml6-module-qtquick-controls
+
+
+2. SETUP STEPS
+--------------
+Step 1: Create a directory named `phantom-red` inside `/usr/share/sddm/themes/`:
+        sudo mkdir -p /usr/share/sddm/themes/phantom-red
+
+Step 2: Copy the required files from this repository to the new directory:
+        sudo cp -r CustomComboBox.qml Main.qml metadata.desktop theme.conf assets fonts /usr/share/sddm/themes/phantom-red/
+
+        Optionally, copy the LICENSE and phantom-red.png preview image:
+        sudo cp LICENSE phantom-red.png /usr/share/sddm/themes/phantom-red/
+
+Step 3: Set the appropriate permissions so that the SDDM manager user can read the files:
+        sudo find /usr/share/sddm/themes/phantom-red -type d -exec chmod 755 {} \;
+        sudo find /usr/share/sddm/themes/phantom-red -type f -exec chmod 644 {} \;
+
+Step 4: Enable the theme by creating/editing `/etc/sddm.conf.d/10-theme.conf` and adding the following text:
+        [Theme]
+        Current=phantom-red
+
+Step 5: Test the theme in a window on your desktop (without logging out) by running:
+        sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/phantom-red
+
+Step 6: (Optional) Change the background wallpaper:
+        1. Copy your desired background image into the theme's assets directory:
+           sudo cp your-wallpaper.png /usr/share/sddm/themes/phantom-red/assets/
+        2. Edit `/usr/share/sddm/themes/phantom-red/theme.conf` and update the `background` property:
+           background=assets/your-wallpaper.png

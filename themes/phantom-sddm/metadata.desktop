@@ -1,8 +1,0 @@
-[SddmGreeterTheme]
-Name=phantom-sddm
-Description=Phantom SDDM - Hyprlock-inspired dark glassmorphic theme
-Author=AMIT
-Version=1.0
-License=MIT
-Type=sddm-theme
-QtVersion=6
