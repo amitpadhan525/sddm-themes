@@ -27,3 +27,9 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 ## ⚙️ Installation
 
 For step-by-step instructions on how to install and activate any of these themes, please refer to the [Installation Guide](file:///home/amit/github/sddm-themes/installation.md).
+
+---
+
+## 📄 License
+
+This repository is licensed under the [MIT License](LICENSE).
