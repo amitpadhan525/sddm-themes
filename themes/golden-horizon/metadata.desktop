@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=golden-horizon
+Description=A warm golden-horizon Qt6 SDDM theme
+Author=AMIT
+Version=0.1
+License=MIT
+Type=sddm-theme
+QtVersion=6

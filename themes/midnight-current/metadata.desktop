@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=midnight-current
+Description=A sleek midnight-current Qt6 SDDM theme
+Author=AMIT
+Version=0.1
+License=MIT
+Type=sddm-theme
+QtVersion=6
