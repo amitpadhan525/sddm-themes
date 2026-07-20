@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=Minimal-Qt6
+Description=A minimal Qt6-based SDDM theme skeleton.
+Author=AMIT
+Version=0.1
+License=MIT
+Type=sddm-theme
+QtVersion=6

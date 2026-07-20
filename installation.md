@@ -58,7 +58,7 @@ To activate the theme, create or update your SDDM configuration. We recommend us
    ```
 2. Enable the theme:
    ```bash
-   echo -e "[Theme]\nCurrent=theme-name" | sudo tee /etc/sddm.conf.d/10-theme.conf
+   echo -e "[Theme]\nCurrent=theme-name" | sudo tee /etc/sddm.conf.d/theme.conf
    ```
    *(Replace `theme-name` with the theme folder name, e.g., `nebula` or `phantom-red`)*
 

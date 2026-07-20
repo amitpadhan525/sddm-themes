@@ -47,7 +47,7 @@ Step 3: Set the appropriate permissions so that the SDDM manager user can read t
         sudo find /usr/share/sddm/themes/phantom-red -type d -exec chmod 755 {} \;
         sudo find /usr/share/sddm/themes/phantom-red -type f -exec chmod 644 {} \;
 
-Step 4: Enable the theme by creating/editing `/etc/sddm.conf.d/10-theme.conf` and adding the following text:
+Step 4: Enable the theme by creating/editing `/etc/sddm.conf.d/theme.conf` and adding the following text:
         [Theme]
         Current=phantom-red
 

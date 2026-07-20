@@ -29,9 +29,19 @@ if [ -f "$TARGET_DIR/setup.sh" ]; then
     chmod 755 "$TARGET_DIR/setup.sh"
 fi
 
-echo "[3/3] Setting active SDDM theme to '$THEME_NAME' in /etc/sddm.conf.d/10-theme.conf..."
+echo "[3/3] Setting active SDDM theme to '$THEME_NAME' in /etc/sddm.conf.d/theme.conf..."
 mkdir -p /etc/sddm.conf.d
-cat <<EOF > /etc/sddm.conf.d/10-theme.conf
+
+if [ -d /etc/sddm.conf.d ]; then
+    for conf_file in /etc/sddm.conf.d/*.conf; do
+        if [ -f "$conf_file" ]; then
+            echo "Renaming existing config $conf_file to ${conf_file}.bak..."
+            mv -f "$conf_file" "${conf_file}.bak"
+        fi
+    done
+fi
+
+cat <<EOF > /etc/sddm.conf.d/theme.conf
 [Theme]
 Current=$THEME_NAME
 EOF
