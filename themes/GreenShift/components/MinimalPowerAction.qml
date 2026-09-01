@@ -8,16 +8,16 @@ Item {
     property string label: ""
     property color normalColor: "#cbd5e1"
     property color hoverColor: "#ffffff"
-    property int iconSize: 22
+    property int iconSize: 26
 
     signal clicked()
 
-    implicitWidth: Math.max(68, labelText.implicitWidth + 14)
-    implicitHeight: 56
+    implicitWidth: Math.max(80, labelText.implicitWidth + 16)
+    implicitHeight: 66
 
     Column {
         anchors.centerIn: parent
-        spacing: 8
+        spacing: 10
 
         Item {
             width: root.iconSize
@@ -28,8 +28,8 @@ Item {
                 id: iconImg
                 anchors.fill: parent
                 source: root.iconSource ? (root.iconSource.indexOf(":") !== -1 ? root.iconSource : Qt.resolvedUrl("../" + root.iconSource)) : ""
-                sourceSize.width: 32
-                sourceSize.height: 32
+                sourceSize.width: 38
+                sourceSize.height: 38
                 fillMode: Image.PreserveAspectFit
                 visible: false
             }
@@ -47,7 +47,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: root.label
             font.family: "Outfit"
-            font.pixelSize: 13
+            font.pixelSize: 15
             font.weight: Font.Medium
             color: mouseArea.containsMouse ? root.hoverColor : root.normalColor
             renderType: Text.NativeRendering

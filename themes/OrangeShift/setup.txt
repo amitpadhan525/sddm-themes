@@ -1,0 +1,65 @@
+ORANGESHIFT SDDM THEME - SETUP & INSTALLATION GUIDE
+==================================================
+
+This document provides details on package dependencies, manual installation steps,
+configuration guidelines, and troubleshooting advice for setting up the OrangeShift SDDM Theme.
+
+1. PREREQUISITES / DEPENDENCIES
+------------------------------
+OrangeShift SDDM is designed for Qt6-based SDDM. To display and function correctly,
+the following packages must be installed depending on your Linux distribution:
+
+* Arch Linux / Manjaro / Artix / EndeavourOS:
+  - sddm
+  - qt6-5compat (Qt6 compatibility module for graphical effects)
+  - qt6-declarative (provides Qt6 QML engine support)
+  - qt6-svg (optional, provides SVG icon support)
+
+* Fedora / Nobara:
+  - sddm
+  - qt6-qt5compat
+  - qt6-qtdeclarative
+  - qt6-qtsvg
+
+* Debian / Ubuntu / Pop!_OS / Linux Mint:
+  - sddm
+  - qml6-module-qt5compat-graphicaleffects
+  - qml6-module-qtqml
+  - qml6-module-qtquick-layouts
+  - qml6-module-qtquick-controls
+
+2. QUICK INSTALLATION
+---------------------
+Run the automated installation script inside this folder:
+  chmod +x setup.sh
+  ./setup.sh
+
+3. MANUAL INSTALLATION STEPS
+----------------------------
+Step 1: Ensure you are in the project root directory.
+Step 2: Create a directory named `OrangeShift` inside `/usr/share/sddm/themes/`:
+        sudo mkdir -p /usr/share/sddm/themes/OrangeShift
+
+Step 3: Copy all files to the new directory:
+        sudo cp -r * /usr/share/sddm/themes/OrangeShift/
+
+Step 4: Set appropriate permissions:
+        sudo find /usr/share/sddm/themes/OrangeShift -type d -exec chmod 755 {} \;
+        sudo find /usr/share/sddm/themes/OrangeShift -type f -exec chmod 644 {} \;
+        sudo chmod 755 /usr/share/sddm/themes/OrangeShift/setup.sh
+
+4. ENABLING THE THEME
+---------------------
+To set OrangeShift SDDM as the current active theme, write a config file in `/etc/sddm.conf.d/`:
+
+1. Ensure `/etc/sddm.conf.d` exists:
+   sudo mkdir -p /etc/sddm.conf.d
+
+2. Create/edit `/etc/sddm.conf.d/theme.conf` and populate it with:
+   [Theme]
+   Current=OrangeShift
+
+5. TESTING THE THEME
+--------------------
+You can test the theme inside a window on your desktop (without logging out):
+  sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/OrangeShift

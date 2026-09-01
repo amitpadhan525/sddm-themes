@@ -24,8 +24,81 @@ Item {
         }
         return "backgrounds/background1.png"
     }
-    property int batteryPercentage: (typeof config !== "undefined" && config.BatteryPercent) ? parseInt(config.BatteryPercent) : 69
+    property int batteryPercentage: (typeof config !== "undefined" && config.BatteryPercent) ? parseInt(config.BatteryPercent) : 100
     property string batteryStatusText: (typeof config !== "undefined" && config.BatteryStatus) ? config.BatteryStatus : "Discharging"
+    property bool isBatteryCharging: false
+
+    function updateBattery() {
+        var batDirs = [
+            "file:///sys/class/power_supply/BAT0/",
+            "file:///sys/class/power_supply/BAT1/",
+            "file:///sys/class/power_supply/BAT2/",
+            "file:///sys/class/power_supply/battery/"
+        ]
+
+        var foundBat = false
+        for (var i = 0; i < batDirs.length; i++) {
+            var dir = batDirs[i]
+            try {
+                var xhr = new XMLHttpRequest()
+                xhr.open("GET", dir + "capacity", false)
+                xhr.send()
+                if (xhr.status === 200 || (xhr.responseText && xhr.responseText.trim().length > 0)) {
+                    var val = parseInt(xhr.responseText.trim())
+                    if (!isNaN(val)) {
+                        root.batteryPercentage = Math.max(0, Math.min(100, val))
+                        foundBat = true
+
+                        // Check charging status
+                        try {
+                            var xhrS = new XMLHttpRequest()
+                            xhrS.open("GET", dir + "status", false)
+                            xhrS.send()
+                            if (xhrS.responseText && xhrS.responseText.trim().length > 0) {
+                                var st = xhrS.responseText.trim()
+                                root.batteryStatusText = st
+                                root.isBatteryCharging = (st.toLowerCase() === "charging" || st.toLowerCase() === "full")
+                            }
+                        } catch (e2) {}
+                        break
+                    }
+                }
+            } catch (e) {}
+        }
+
+        if (!foundBat) {
+            var acDirs = [
+                "file:///sys/class/power_supply/ACAD/online",
+                "file:///sys/class/power_supply/AC/online",
+                "file:///sys/class/power_supply/ADP0/online",
+                "file:///sys/class/power_supply/ADP1/online"
+            ]
+            for (var j = 0; j < acDirs.length; j++) {
+                try {
+                    var xhrAc = new XMLHttpRequest()
+                    xhrAc.open("GET", acDirs[j], false)
+                    xhrAc.send()
+                    if (xhrAc.status === 200 || (xhrAc.responseText && xhrAc.responseText.trim().length > 0)) {
+                        var acOnline = parseInt(xhrAc.responseText.trim())
+                        if (acOnline === 1) {
+                            root.isBatteryCharging = true
+                            root.batteryStatusText = "AC Connected"
+                            break
+                        }
+                    }
+                } catch (e3) {}
+            }
+        }
+    }
+
+    Timer {
+        id: batteryTimer
+        interval: 8000
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.updateBattery()
+    }
 
     // ── SDDM State ──────────────────────────────────────────────────────────
     property var usersList: (typeof userModel !== "undefined" && userModel) ? userModel : mockUserModel
@@ -229,9 +302,9 @@ Item {
         id: mainColumn
         readonly property real baseX: parent.width * 0.18 - (width / 2)
         x: baseX
-        y: parent.height * 0.12
-        width: 320
-        height: parent.height * 0.78
+        y: parent.height * 0.10
+        width: 384
+        height: parent.height * 0.82
 
         // 1. Date (e.g. Monday, August 31) - Clean & Balanced
         Text {
@@ -240,9 +313,9 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatDateTime(new Date(), "dddd, MMMM d")
             font.family: "Outfit"
-            font.pixelSize: 26
+            font.pixelSize: 31
             font.weight: Font.DemiBold
-            font.letterSpacing: 0.8
+            font.letterSpacing: 1.0
             color: "#ffffff"
             renderType: Text.NativeRendering
 
@@ -254,17 +327,17 @@ Item {
             }
         }
 
-        // 2. Large Time Display (e.g. 15:45)
+        // 2. Large Time Display (e.g. 15:45) - Increased by ~20%
         Text {
             id: timeLabel
             anchors.top: dateLabel.bottom
-            anchors.topMargin: 6
+            anchors.topMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatDateTime(new Date(), "HH:mm")
             font.family: "Outfit"
-            font.pixelSize: 148
+            font.pixelSize: 178
             font.bold: true
-            font.letterSpacing: -2
+            font.letterSpacing: -3
             color: "#ffffff"
             renderType: Text.NativeRendering
 
@@ -280,7 +353,7 @@ Item {
         Item {
             id: middleSection
             anchors.top: timeLabel.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: 34
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width
             implicitHeight: middleCol.implicitHeight
@@ -289,7 +362,7 @@ Item {
                 id: middleCol
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 16
+                spacing: 18
                 width: parent.width
 
                 // ── 1. Simple, Sleek Password Input Box with Integrated Submit ──
@@ -297,26 +370,21 @@ Item {
                     id: passPill
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width
-                    height: 48
-                    radius: 24
+                    height: 56
+                    radius: 28
                     color: passInput.activeFocus ? "#151720" : Qt.rgba(0.08, 0.09, 0.13, 0.85)
-                    border.color: passInput.activeFocus ? "#ea580c" : Qt.rgba(1, 1, 1, 0.14)
-                    border.width: passInput.activeFocus ? 1.5 : 1
+                    border.color: passInput.activeFocus ? (typingPulse.running ? Qt.rgba(1, 1, 1, 0.40) : Qt.rgba(1, 1, 1, 0.25)) : Qt.rgba(1, 1, 1, 0.14)
+                    border.width: 1
+                    scale: 1.0
 
-                    Behavior on border.color { ColorAnimation { duration: 150 } }
+                    Behavior on border.color { ColorAnimation { duration: 120 } }
                     Behavior on color { ColorAnimation { duration: 150 } }
 
-                    // Subtle focus glow
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.margins: -2
-                        radius: parent.radius + 2
-                        color: "transparent"
-                        border.color: "#ea580c"
-                        border.width: 1.5
-                        opacity: passInput.activeFocus ? 0.35 : 0
-                        z: -1
-                        Behavior on opacity { NumberAnimation { duration: 150 } }
+                    // Typing micro-scale bounce on pill
+                    SequentialAnimation {
+                        id: typingPulse
+                        NumberAnimation { target: passPill; property: "scale"; to: 1.015; duration: 60; easing.type: Easing.OutQuad }
+                        NumberAnimation { target: passPill; property: "scale"; to: 1.0; duration: 100; easing.type: Easing.InOutQuad }
                     }
 
                     MouseArea {
@@ -327,16 +395,31 @@ Item {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 7
-                        spacing: 10
+                        anchors.leftMargin: 18
+                        anchors.rightMargin: 8
+                        spacing: 12
 
-                        // Lock Icon
+                        // Lock Icon with Typing Interactive Bounce
                         Item {
-                            width: 18
-                            height: 18
-                            Layout.preferredWidth: 18
-                            Layout.preferredHeight: 18
+                            id: lockContainer
+                            width: 22
+                            height: 22
+                            Layout.preferredWidth: 22
+                            Layout.preferredHeight: 22
+                            scale: 1.0
+                            rotation: 0
+
+                            SequentialAnimation {
+                                id: lockIconAnim
+                                ParallelAnimation {
+                                    NumberAnimation { target: lockContainer; property: "scale"; to: 1.25; duration: 70; easing.type: Easing.OutQuad }
+                                    NumberAnimation { target: lockContainer; property: "rotation"; from: -8; to: 8; duration: 70; easing.type: Easing.InOutQuad }
+                                }
+                                ParallelAnimation {
+                                    NumberAnimation { target: lockContainer; property: "scale"; to: 1.0; duration: 120; easing.type: Easing.OutBack }
+                                    NumberAnimation { target: lockContainer; property: "rotation"; to: 0; duration: 120; easing.type: Easing.OutBack }
+                                }
+                            }
 
                             Image {
                                 id: lockIconImg
@@ -348,8 +431,8 @@ Item {
                             ColorOverlay {
                                 anchors.fill: lockIconImg
                                 source: lockIconImg
-                                color: passInput.activeFocus ? "#ea580c" : "#64748b"
-                                Behavior on color { ColorAnimation { duration: 150 } }
+                                color: passInput.activeFocus ? (typingPulse.running ? "#ffffff" : "#cbd5e1") : "#64748b"
+                                Behavior on color { ColorAnimation { duration: 120 } }
                             }
                         }
 
@@ -362,7 +445,7 @@ Item {
                             echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
                             passwordCharacter: "●"
                             font.family: "Outfit"
-                            font.pixelSize: 14
+                            font.pixelSize: 17
                             font.letterSpacing: root.showPassword ? 0 : 2
                             color: "#ffffff"
                             selectionColor: "#ea580c"
@@ -375,10 +458,22 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                                 text: "Password"
                                 font.family: "Outfit"
-                                font.pixelSize: 14
+                                font.pixelSize: 17
                                 font.letterSpacing: 0
                                 color: "#64748b"
                                 visible: !passInput.text && !passInput.inputMethodComposing
+                            }
+
+                            onTextEdited: {
+                                typingPulse.restart()
+                                lockIconAnim.restart()
+                            }
+
+                            onTextChanged: {
+                                if (passInput.activeFocus && passInput.text.length > 0) {
+                                    typingPulse.restart()
+                                    lockIconAnim.restart()
+                                }
                             }
 
                             onAccepted: root.doLogin()
@@ -386,18 +481,18 @@ Item {
 
                         // Eye reveal/hide password toggle
                         Item {
-                            width: 26
-                            height: 26
-                            Layout.preferredWidth: 26
-                            Layout.preferredHeight: 26
+                            width: 30
+                            height: 30
+                            Layout.preferredWidth: 30
+                            Layout.preferredHeight: 30
                             visible: passInput.text.length > 0
 
                             Image {
                                 id: eyeIconImg
                                 source: root.showPassword ? "assets/eye-off.svg" : "assets/eye.svg"
                                 anchors.centerIn: parent
-                                width: 16
-                                height: 16
+                                width: 19
+                                height: 19
                                 fillMode: Image.PreserveAspectFit
                                 visible: false
                             }
@@ -423,11 +518,11 @@ Item {
                         // Integrated Submit Arrow Button
                         Rectangle {
                             id: submitBtn
-                            width: 34
-                            height: 34
-                            Layout.preferredWidth: 34
-                            Layout.preferredHeight: 34
-                            radius: 17
+                            width: 40
+                            height: 40
+                            Layout.preferredWidth: 40
+                            Layout.preferredHeight: 40
+                            radius: 20
                             color: submitMouse.containsMouse ? "#ea580c" : (passInput.text.length > 0 ? Qt.rgba(0.92, 0.35, 0.05, 0.35) : Qt.rgba(1, 1, 1, 0.08))
                             scale: submitMouse.pressed ? 0.92 : (submitMouse.containsMouse ? 1.05 : 1.0)
 
@@ -438,7 +533,7 @@ Item {
                                 anchors.centerIn: parent
                                 visible: !root.isLoggingIn
                                 text: "➜"
-                                font.pixelSize: 14
+                                font.pixelSize: 17
                                 font.bold: true
                                 color: submitMouse.containsMouse || passInput.text.length > 0 ? "#ffffff" : "#64748b"
                             }
@@ -450,7 +545,7 @@ Item {
                                 visible: root.isLoggingIn
                                 text: "󰑮"
                                 font.family: "JetBrainsMono NF"
-                                font.pixelSize: 15
+                                font.pixelSize: 18
                                 color: "#ffffff"
 
                                 RotationAnimation on rotation {
@@ -480,14 +575,14 @@ Item {
                 // ── 2. Sleek Cohesive Glass Capsules for User & Session Switcher ──
                 RowLayout {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 12
+                    spacing: 14
 
                     // User Switcher Capsule Pill
                     Rectangle {
                         id: userActionBtn
-                        implicitWidth: Math.max(120, userRowLayout.implicitWidth + 24)
-                        height: 34
-                        radius: 17
+                        implicitWidth: Math.max(140, userRowLayout.implicitWidth + 28)
+                        height: 40
+                        radius: 20
                         color: userMouse.containsMouse || userPopup.opened ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0.08, 0.10, 0.15, 0.85)
                         border.color: userPopup.opened ? "#ea580c" : (userMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.12))
                         border.width: 1
@@ -498,13 +593,13 @@ Item {
                         RowLayout {
                             id: userRowLayout
                             anchors.centerIn: parent
-                            spacing: 7
+                            spacing: 8
 
                             Item {
-                                width: 15
-                                height: 15
-                                Layout.preferredWidth: 15
-                                Layout.preferredHeight: 15
+                                width: 18
+                                height: 18
+                                Layout.preferredWidth: 18
+                                Layout.preferredHeight: 18
 
                                 Image {
                                     id: userIconImg
@@ -525,7 +620,7 @@ Item {
                                 id: userLabel
                                 text: root.getCurrentUserDisplayName()
                                 font.family: "Outfit"
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                                 font.weight: Font.Medium
                                 color: userMouse.containsMouse || userPopup.opened ? "#ffffff" : "#cbd5e1"
                                 renderType: Text.NativeRendering
@@ -534,7 +629,7 @@ Item {
 
                             Text {
                                 text: "▾"
-                                font.pixelSize: 9
+                                font.pixelSize: 11
                                 color: userMouse.containsMouse || userPopup.opened ? "#ffffff" : "#64748b"
                             }
                         }
@@ -555,7 +650,7 @@ Item {
                             id: userPopup
                             y: userActionBtn.height + 6
                             x: (userActionBtn.width - width) / 2
-                            width: 170
+                            width: 190
                             padding: 6
                             focus: true
                             closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
@@ -569,7 +664,7 @@ Item {
 
                             contentItem: ListView {
                                 id: userListView
-                                implicitHeight: Math.min(contentHeight, 180)
+                                implicitHeight: Math.min(contentHeight, 200)
                                 clip: true
                                 model: root.usersList
                                 boundsBehavior: Flickable.StopAtBounds
@@ -577,7 +672,7 @@ Item {
                                 delegate: Rectangle {
                                     id: userDel
                                     width: userListView.width
-                                    height: 32
+                                    height: 38
                                     radius: 8
                                     color: itemMouseU.containsMouse || index === root.selectedUserIndex ? Qt.rgba(1, 1, 1, index === root.selectedUserIndex ? 0.14 : 0.07) : "transparent"
 
@@ -591,14 +686,14 @@ Item {
 
                                     RowLayout {
                                         anchors.fill: parent
-                                        anchors.leftMargin: 10
-                                        anchors.rightMargin: 10
-                                        spacing: 8
+                                        anchors.leftMargin: 12
+                                        anchors.rightMargin: 12
+                                        spacing: 10
 
                                         Rectangle {
-                                            width: 6
-                                            height: 6
-                                            radius: 3
+                                            width: 7
+                                            height: 7
+                                            radius: 3.5
                                             color: index === root.selectedUserIndex ? "#ea580c" : "transparent"
                                         }
 
@@ -606,7 +701,7 @@ Item {
                                             Layout.fillWidth: true
                                             text: userDel.itemUserName
                                             font.family: "Outfit"
-                                            font.pixelSize: 12
+                                            font.pixelSize: 14
                                             font.weight: index === root.selectedUserIndex ? Font.DemiBold : Font.Normal
                                             color: index === root.selectedUserIndex ? "#ffffff" : "#cbd5e1"
                                             elide: Text.ElideRight
@@ -632,9 +727,9 @@ Item {
                     // Session Switcher Capsule Pill
                     Rectangle {
                         id: sessionActionBtn
-                        implicitWidth: Math.max(120, sessRowLayout.implicitWidth + 24)
-                        height: 34
-                        radius: 17
+                        implicitWidth: Math.max(140, sessRowLayout.implicitWidth + 28)
+                        height: 40
+                        radius: 20
                         color: sessionMouse.containsMouse || sessionPopup.opened ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0.08, 0.10, 0.15, 0.85)
                         border.color: sessionPopup.opened ? "#ea580c" : (sessionMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.12))
                         border.width: 1
@@ -645,13 +740,13 @@ Item {
                         RowLayout {
                             id: sessRowLayout
                             anchors.centerIn: parent
-                            spacing: 7
+                            spacing: 8
 
                             Item {
-                                width: 15
-                                height: 15
-                                Layout.preferredWidth: 15
-                                Layout.preferredHeight: 15
+                                width: 18
+                                height: 18
+                                Layout.preferredWidth: 18
+                                Layout.preferredHeight: 18
 
                                 Image {
                                     id: sessionIconImg
@@ -672,7 +767,7 @@ Item {
                                 id: sessionLabel
                                 text: root.getCurrentSessionDisplayName()
                                 font.family: "Outfit"
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                                 font.weight: Font.Medium
                                 color: sessionMouse.containsMouse || sessionPopup.opened ? "#ffffff" : "#cbd5e1"
                                 renderType: Text.NativeRendering
@@ -681,7 +776,7 @@ Item {
 
                             Text {
                                 text: "▾"
-                                font.pixelSize: 9
+                                font.pixelSize: 11
                                 color: sessionMouse.containsMouse || sessionPopup.opened ? "#ffffff" : "#64748b"
                             }
                         }
@@ -702,7 +797,7 @@ Item {
                             id: sessionPopup
                             y: sessionActionBtn.height + 6
                             x: (sessionActionBtn.width - width) / 2
-                            width: 180
+                            width: 200
                             padding: 6
                             focus: true
                             closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
@@ -716,7 +811,7 @@ Item {
 
                             contentItem: ListView {
                                 id: sessionListView
-                                implicitHeight: Math.min(contentHeight, 180)
+                                implicitHeight: Math.min(contentHeight, 200)
                                 clip: true
                                 model: root.sessionsList
                                 boundsBehavior: Flickable.StopAtBounds
@@ -724,7 +819,7 @@ Item {
                                 delegate: Rectangle {
                                     id: sessDel
                                     width: sessionListView.width
-                                    height: 32
+                                    height: 38
                                     radius: 8
                                     color: itemMouseS.containsMouse || index === root.selectedSessionIndex ? Qt.rgba(1, 1, 1, index === root.selectedSessionIndex ? 0.14 : 0.07) : "transparent"
 
@@ -737,14 +832,14 @@ Item {
 
                                     RowLayout {
                                         anchors.fill: parent
-                                        anchors.leftMargin: 10
-                                        anchors.rightMargin: 10
-                                        spacing: 8
+                                        anchors.leftMargin: 12
+                                        anchors.rightMargin: 12
+                                        spacing: 10
 
                                         Rectangle {
-                                            width: 6
-                                            height: 6
-                                            radius: 3
+                                            width: 7
+                                            height: 7
+                                            radius: 3.5
                                             color: index === root.selectedSessionIndex ? "#ea580c" : "transparent"
                                         }
 
@@ -752,7 +847,7 @@ Item {
                                             Layout.fillWidth: true
                                             text: sessDel.itemSessionName
                                             font.family: "Outfit"
-                                            font.pixelSize: 12
+                                            font.pixelSize: 14
                                             font.weight: index === root.selectedSessionIndex ? Font.DemiBold : Font.Normal
                                             color: index === root.selectedSessionIndex ? "#ffffff" : "#cbd5e1"
                                             elide: Text.ElideRight
@@ -782,7 +877,7 @@ Item {
                     visible: root.feedbackMessage !== "" || root.isCapsLockOn
                     text: root.feedbackMessage !== "" ? root.feedbackMessage : (root.isCapsLockOn ? "󰘲 Caps Lock ON" : "")
                     font.family: "Outfit"
-                    font.pixelSize: 12
+                    font.pixelSize: 14
                     font.weight: Font.Medium
                     color: root.isErrorMessage ? "#ef4444" : "#f59e0b"
                     renderType: Text.NativeRendering
@@ -794,14 +889,14 @@ Item {
         Column {
             id: bottomSection
             anchors.top: middleSection.bottom
-            anchors.topMargin: 42
+            anchors.topMargin: 46
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 24
+            spacing: 28
 
             // Power Actions Row
             RowLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 38
+                spacing: 44
 
                 MinimalPowerAction {
                     iconSource: "assets/power.svg"
@@ -831,9 +926,9 @@ Item {
             // System Status Pill Badge
             Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
-                implicitWidth: statusRow.implicitWidth + 28
-                height: 30
-                radius: 15
+                implicitWidth: statusRow.implicitWidth + 34
+                height: 36
+                radius: 18
                 color: Qt.rgba(1, 1, 1, 0.05)
                 border.color: Qt.rgba(1, 1, 1, 0.10)
                 border.width: 1
@@ -841,20 +936,20 @@ Item {
                 RowLayout {
                     id: statusRow
                     anchors.centerIn: parent
-                    spacing: 10
+                    spacing: 12
 
                     // Battery Indicator
                     RowLayout {
-                        spacing: 6
+                        spacing: 7
                         Text {
                             text: "⚡"
-                            font.pixelSize: 12
-                            color: "#ea580c"
+                            font.pixelSize: 14
+                            color: root.isBatteryCharging ? "#22c55e" : (root.batteryPercentage <= 20 ? "#ef4444" : "#ea580c")
                         }
                         Text {
                             text: root.batteryPercentage + "%"
                             font.family: "Outfit"
-                            font.pixelSize: 12
+                            font.pixelSize: 14
                             font.weight: Font.Medium
                             color: "#cbd5e1"
                         }
@@ -862,9 +957,9 @@ Item {
 
                     // Dot Divider
                     Rectangle {
-                        width: 3
-                        height: 3
-                        radius: 1.5
+                        width: 4
+                        height: 4
+                        radius: 2
                         color: "#475569"
                     }
 
@@ -872,16 +967,16 @@ Item {
                     Text {
                         text: root.getCurrentUserDisplayName()
                         font.family: "Outfit"
-                        font.pixelSize: 12
+                        font.pixelSize: 14
                         font.weight: Font.Medium
                         color: "#cbd5e1"
                     }
 
                     // Dot Divider
                     Rectangle {
-                        width: 3
-                        height: 3
-                        radius: 1.5
+                        width: 4
+                        height: 4
+                        radius: 2
                         color: "#475569"
                     }
 
@@ -889,7 +984,7 @@ Item {
                     Text {
                         text: root.getCurrentSessionDisplayName()
                         font.family: "Outfit"
-                        font.pixelSize: 12
+                        font.pixelSize: 14
                         font.weight: Font.Medium
                         color: "#94a3b8"
                     }
