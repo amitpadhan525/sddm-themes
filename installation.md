@@ -21,9 +21,23 @@ Ensure you have the required Qt6 QML modules installed for your Linux distributi
   sudo apt install sddm qml6-module-qt5compat-graphicaleffects qml6-module-qtqml qml6-module-qtquick-layouts qml6-module-qtquick-controls
   ```
 
+## 🚀 Quick Installation (Automated)
+
+Inside each theme folder, an automated installer script `setup.sh` is provided. It handles copying files, setting secure permissions, and overriding active SDDM configurations automatically:
+
+```bash
+cd theme-name
+./setup.sh
+```
+
+> **Options:**
+> - `./setup.sh` — Install and activate theme (prompts for `sudo` if needed).
+> - `./setup.sh --preview` or `./preview.sh` — Test/preview theme locally without installing or root.
+> - `./setup.sh --uninstall` — Remove theme and clean configuration.
+
 ---
 
-## Installation Steps (from ZIP file)
+## 🛠️ Manual Installation (from ZIP or Source)
 
 ### 1. Download & Extract the ZIP
 Download the release `.zip` file for your chosen theme (e.g., `nebula.zip` or `phantom-red.zip`) and extract it:

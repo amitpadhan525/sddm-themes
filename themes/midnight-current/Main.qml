@@ -242,7 +242,8 @@ Item {
 
             function tickClock() {
                 var d  = new Date()
-                var hh = d.getHours();   hoursText.text   = hh < 10 ? "0"+hh : ""+hh
+                var hh = d.getHours() % 12; hh = hh ? hh : 12;
+                hoursText.text   = hh < 10 ? "0"+hh : ""+hh
                 var mm = d.getMinutes(); minutesText.text = mm < 10 ? "0"+mm : ""+mm
 
                 var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]

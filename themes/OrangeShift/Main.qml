@@ -27,6 +27,19 @@ Item {
     property int batteryPercentage: (typeof config !== "undefined" && config.BatteryPercent) ? parseInt(config.BatteryPercent) : 100
     property string batteryStatusText: (typeof config !== "undefined" && config.BatteryStatus) ? config.BatteryStatus : "Discharging"
     property bool isBatteryCharging: false
+    readonly property string timeFormat: (typeof config !== "undefined" && config.TimeFormat && config.TimeFormat !== "") ? config.TimeFormat : "hh:mm"
+    readonly property string dateFormat: (typeof config !== "undefined" && config.DateFormat && config.DateFormat !== "") ? config.DateFormat : "dddd, MMMM d"
+    readonly property string timeFont: (typeof config !== "undefined" && config.TimeFont && config.TimeFont !== "") ? config.TimeFont : "Outfit"
+    readonly property string fontFamily: (typeof config !== "undefined" && config.FontFamily && config.FontFamily !== "") ? config.FontFamily : "Outfit"
+
+    function formatTime12(d) {
+        var h = d.getHours() % 12
+        h = h ? h : 12
+        var m = d.getMinutes()
+        var hh = h < 10 ? "0" + h : "" + h
+        var mm = m < 10 ? "0" + m : "" + m
+        return hh + ":" + mm
+    }
 
     function updateBattery() {
         var batDirs = [
@@ -311,8 +324,8 @@ Item {
             id: dateLabel
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDateTime(new Date(), "dddd, MMMM d")
-            font.family: "Outfit"
+            text: Qt.formatDateTime(new Date(), root.dateFormat)
+            font.family: root.fontFamily
             font.pixelSize: 31
             font.weight: Font.DemiBold
             font.letterSpacing: 1.0
@@ -323,18 +336,18 @@ Item {
                 interval: 60000
                 running: true
                 repeat: true
-                onTriggered: dateLabel.text = Qt.formatDateTime(new Date(), "dddd, MMMM d")
+                onTriggered: dateLabel.text = Qt.formatDateTime(new Date(), root.dateFormat)
             }
         }
 
-        // 2. Large Time Display (e.g. 15:45) - Increased by ~20%
+        // 2. Large Time Display (12-hour clock, e.g. 01:45)
         Text {
             id: timeLabel
             anchors.top: dateLabel.bottom
             anchors.topMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDateTime(new Date(), "HH:mm")
-            font.family: "Outfit"
+            text: root.formatTime12(new Date())
+            font.family: root.timeFont
             font.pixelSize: 178
             font.bold: true
             font.letterSpacing: -3
@@ -345,7 +358,7 @@ Item {
                 interval: 1000
                 running: true
                 repeat: true
-                onTriggered: timeLabel.text = Qt.formatDateTime(new Date(), "HH:mm")
+                onTriggered: timeLabel.text = root.formatTime12(new Date())
             }
         }
 

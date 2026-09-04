@@ -27,6 +27,19 @@ Item {
     property int batteryPercentage: (typeof config !== "undefined" && config.BatteryPercent) ? parseInt(config.BatteryPercent) : 100
     property string batteryStatusText: (typeof config !== "undefined" && config.BatteryStatus) ? config.BatteryStatus : "Discharging"
     property bool isBatteryCharging: false
+    readonly property string timeFormat: (typeof config !== "undefined" && config.TimeFormat && config.TimeFormat !== "") ? config.TimeFormat : "hh:mm"
+    readonly property string dateFormat: (typeof config !== "undefined" && config.DateFormat && config.DateFormat !== "") ? config.DateFormat : "dddd, MMMM d"
+    readonly property string timeFont: (typeof config !== "undefined" && config.TimeFont && config.TimeFont !== "") ? config.TimeFont : "Outfit"
+    readonly property string fontFamily: (typeof config !== "undefined" && config.FontFamily && config.FontFamily !== "") ? config.FontFamily : "Outfit"
+
+    function formatTime12(d) {
+        var h = d.getHours() % 12
+        h = h ? h : 12
+        var m = d.getMinutes()
+        var hh = h < 10 ? "0" + h : "" + h
+        var mm = m < 10 ? "0" + m : "" + m
+        return hh + ":" + mm
+    }
 
     function updateBattery() {
         var batDirs = [
@@ -311,7 +324,7 @@ Item {
             id: dateLabel
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDateTime(new Date(), "dddd, MMMM d")
+            text: Qt.formatDateTime(new Date(), root.dateFormat)
             font.family: "Outfit"
             font.pixelSize: 31
             font.weight: Font.DemiBold
@@ -323,18 +336,18 @@ Item {
                 interval: 60000
                 running: true
                 repeat: true
-                onTriggered: dateLabel.text = Qt.formatDateTime(new Date(), "dddd, MMMM d")
+                onTriggered: dateLabel.text = Qt.formatDateTime(new Date(), root.dateFormat)
             }
         }
 
-        // 2. Large Time Display (e.g. 15:45) - Increased by ~20%
+        // 2. Large Time Display (12-hour clock, e.g. 01:45)
         Text {
             id: timeLabel
             anchors.top: dateLabel.bottom
             anchors.topMargin: 8
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDateTime(new Date(), "HH:mm")
-            font.family: "Outfit"
+            text: root.formatTime12(new Date())
+            font.family: root.timeFont
             font.pixelSize: 178
             font.bold: true
             font.letterSpacing: -3
@@ -345,7 +358,7 @@ Item {
                 interval: 1000
                 running: true
                 repeat: true
-                onTriggered: timeLabel.text = Qt.formatDateTime(new Date(), "HH:mm")
+                onTriggered: timeLabel.text = root.formatTime12(new Date())
             }
         }
 
@@ -448,7 +461,7 @@ Item {
                             font.pixelSize: 17
                             font.letterSpacing: root.showPassword ? 0 : 2
                             color: "#ffffff"
-                            selectionColor: "#ea580c"
+                            selectionColor: "#10b981"
                             selectedTextColor: "#ffffff"
                             focus: true
                             clip: true
@@ -523,7 +536,7 @@ Item {
                             Layout.preferredWidth: 40
                             Layout.preferredHeight: 40
                             radius: 20
-                            color: submitMouse.containsMouse ? "#ea580c" : (passInput.text.length > 0 ? Qt.rgba(0.92, 0.35, 0.05, 0.35) : Qt.rgba(1, 1, 1, 0.08))
+                            color: submitMouse.containsMouse ? "#10b981" : (passInput.text.length > 0 ? Qt.rgba(0.06, 0.72, 0.50, 0.35) : Qt.rgba(1, 1, 1, 0.08))
                             scale: submitMouse.pressed ? 0.92 : (submitMouse.containsMouse ? 1.05 : 1.0)
 
                             Behavior on color { ColorAnimation { duration: 150 } }
@@ -584,7 +597,7 @@ Item {
                         height: 40
                         radius: 20
                         color: userMouse.containsMouse || userPopup.opened ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0.08, 0.10, 0.15, 0.85)
-                        border.color: userPopup.opened ? "#ea580c" : (userMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.12))
+                        border.color: userPopup.opened ? "#10b981" : (userMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.12))
                         border.width: 1
 
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -694,7 +707,7 @@ Item {
                                             width: 7
                                             height: 7
                                             radius: 3.5
-                                            color: index === root.selectedUserIndex ? "#ea580c" : "transparent"
+                                            color: index === root.selectedUserIndex ? "#10b981" : "transparent"
                                         }
 
                                         Text {
@@ -731,7 +744,7 @@ Item {
                         height: 40
                         radius: 20
                         color: sessionMouse.containsMouse || sessionPopup.opened ? Qt.rgba(1, 1, 1, 0.12) : Qt.rgba(0.08, 0.10, 0.15, 0.85)
-                        border.color: sessionPopup.opened ? "#ea580c" : (sessionMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.12))
+                        border.color: sessionPopup.opened ? "#10b981" : (sessionMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : Qt.rgba(1, 1, 1, 0.12))
                         border.width: 1
 
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -840,7 +853,7 @@ Item {
                                             width: 7
                                             height: 7
                                             radius: 3.5
-                                            color: index === root.selectedSessionIndex ? "#ea580c" : "transparent"
+                                            color: index === root.selectedSessionIndex ? "#10b981" : "transparent"
                                         }
 
                                         Text {
@@ -944,7 +957,7 @@ Item {
                         Text {
                             text: "⚡"
                             font.pixelSize: 14
-                            color: root.isBatteryCharging ? "#22c55e" : (root.batteryPercentage <= 20 ? "#ef4444" : "#ea580c")
+                            color: root.isBatteryCharging ? "#22c55e" : (root.batteryPercentage <= 20 ? "#ef4444" : "#10b981")
                         }
                         Text {
                             text: root.batteryPercentage + "%"

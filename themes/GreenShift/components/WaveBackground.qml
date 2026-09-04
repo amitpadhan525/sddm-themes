@@ -75,11 +75,11 @@ Item {
 
             // Smooth multi-stop lighting gradient across the dome
             var grad = ctx.createRadialGradient(w * 0.88, h * 0.62, 40, w * 0.72, h * 0.48, w * 0.58)
-            grad.addColorStop(0.0, "#ffb82e")
-            grad.addColorStop(0.20, "#f97316")
-            grad.addColorStop(0.55, "#c2410c")
-            grad.addColorStop(0.80, "#9a1d00")
-            grad.addColorStop(1.0, "#5a0e00")
+            grad.addColorStop(0.0, "#4ade80")
+            grad.addColorStop(0.20, "#22c55e")
+            grad.addColorStop(0.55, "#16a34a")
+            grad.addColorStop(0.80, "#15803d")
+            grad.addColorStop(1.0, "#064e3b")
 
             ctx.fillStyle = grad
             ctx.fill()

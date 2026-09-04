@@ -289,8 +289,8 @@ Item {
                 Row {
                     id: dotsRow
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: width <= parent.width ? parent.horizontalCenter : null
-                    anchors.right: width > parent.width ? parent.right : null
+                    anchors.horizontalCenter: width <= parent.width ? parent.horizontalCenter : undefined
+                    anchors.right: width > parent.width ? parent.right : undefined
                     spacing: 10
                     visible: passwordInput.text.length > 0
 

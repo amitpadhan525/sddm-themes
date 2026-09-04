@@ -44,6 +44,26 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ---
 
+## 5. GreenShift
+
+**GreenShift** is a sleek, modern glassmorphic SDDM greeter theme featuring vivid green glowing accents and high-contrast typography. It features custom fonts (*Outfit*, *Bebas Neue*, and *JetBrainsMono*), a live clock and date display, smooth input focus, error animations, session/user selection dropdowns, and dedicated power management controls.
+
+![GreenShift SDDM Theme Preview](screenshots/GreenShift.png)
+
+[📥 Download ZIP](https://github.com/amitpadhan525/sddm-themes/releases/latest/download/GreenShift.zip) • `curl -sSLO https://github.com/amitpadhan525/sddm-themes/releases/latest/download/GreenShift.zip && unzip -q GreenShift.zip && cd GreenShift && ./setup.sh`
+
+---
+
+## 6. OrangeShift
+
+**OrangeShift** is a vibrant, modern glassmorphic SDDM greeter theme accented with deep orange and amber tones. Built on Qt6 / QML, it showcases custom typography (*Outfit*, *Bebas Neue*, *JetBrainsMono*), live digital clock, session selector, error shake animations, and power controls.
+
+![OrangeShift SDDM Theme Preview](screenshots/OrangeShift.png)
+
+[📥 Download ZIP](https://github.com/amitpadhan525/sddm-themes/releases/latest/download/OrangeShift.zip) • `curl -sSLO https://github.com/amitpadhan525/sddm-themes/releases/latest/download/OrangeShift.zip && unzip -q OrangeShift.zip && cd OrangeShift && ./setup.sh`
+
+---
+
 ## ⚙️ Installation
 
 For step-by-step instructions on how to install and activate any of these themes, please refer to the [Installation Guide](file:///home/amit/github/sddm-themes/installation.md).
