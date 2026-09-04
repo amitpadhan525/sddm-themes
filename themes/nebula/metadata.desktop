@@ -2,7 +2,7 @@
 Name=nebula
 Description=Nebula SDDM - Hyprlock-inspired dark glassmorphic theme
 Author=AMIT
-Version=1.0
+Version=1.1.0
 License=MIT
 Type=sddm-theme
 QtVersion=6
