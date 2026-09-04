@@ -56,6 +56,9 @@ To set GreenShift SDDM as the current active theme, write a config file in `/etc
    sudo mkdir -p /etc/sddm.conf.d
 
 2. Create/edit `/etc/sddm.conf.d/theme.conf` and populate it with:
+   [General]
+   GreeterEnvironment=QML_XHR_ALLOW_FILE_READ=1
+
    [Theme]
    Current=GreenShift
 

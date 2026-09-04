@@ -72,7 +72,7 @@ To activate the theme, create or update your SDDM configuration. We recommend us
    ```
 2. Enable the theme:
    ```bash
-   echo -e "[Theme]\nCurrent=theme-name" | sudo tee /etc/sddm.conf.d/theme.conf
+   echo -e "[General]\nGreeterEnvironment=QML_XHR_ALLOW_FILE_READ=1\n\n[Theme]\nCurrent=theme-name" | sudo tee /etc/sddm.conf.d/theme.conf
    ```
    *(Replace `theme-name` with the theme folder name, e.g., `nebula` or `phantom-red`)*
 

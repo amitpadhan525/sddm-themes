@@ -2,7 +2,7 @@
 Name=golden-horizon
 Description=A warm golden-horizon Qt6 SDDM theme
 Author=AMIT
-Version=1.1.0
+Version=1.1.1
 License=MIT
 Type=sddm-theme
 QtVersion=6

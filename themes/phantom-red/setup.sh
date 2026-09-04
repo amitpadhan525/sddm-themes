@@ -118,6 +118,9 @@ done
 
 # Write authoritative theme configuration
 cat <<EOF > /etc/sddm.conf.d/theme.conf
+[General]
+GreeterEnvironment=QML_XHR_ALLOW_FILE_READ=1
+
 [Theme]
 Current=$THEME_NAME
 EOF

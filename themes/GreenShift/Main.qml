@@ -27,6 +27,7 @@ Item {
     property int batteryPercentage: (typeof config !== "undefined" && config.BatteryPercent) ? parseInt(config.BatteryPercent) : 100
     property string batteryStatusText: (typeof config !== "undefined" && config.BatteryStatus) ? config.BatteryStatus : "Discharging"
     property bool isBatteryCharging: false
+    property bool hasBattery: false
     readonly property string timeFormat: (typeof config !== "undefined" && config.TimeFormat && config.TimeFormat !== "") ? config.TimeFormat : "hh:mm"
     readonly property string dateFormat: (typeof config !== "undefined" && config.DateFormat && config.DateFormat !== "") ? config.DateFormat : "dddd, MMMM d"
     readonly property string timeFont: (typeof config !== "undefined" && config.TimeFont && config.TimeFont !== "") ? config.TimeFont : "Outfit"
@@ -46,7 +47,12 @@ Item {
             "file:///sys/class/power_supply/BAT0/",
             "file:///sys/class/power_supply/BAT1/",
             "file:///sys/class/power_supply/BAT2/",
-            "file:///sys/class/power_supply/battery/"
+            "file:///sys/class/power_supply/BAT3/",
+            "file:///sys/class/power_supply/BATT/",
+            "file:///sys/class/power_supply/BATC/",
+            "file:///sys/class/power_supply/battery/",
+            "file:///sys/class/power_supply/axp20x-battery/",
+            "file:///sys/class/power_supply/macsmc-battery/"
         ]
 
         var foundBat = false
@@ -61,30 +67,75 @@ Item {
                     if (!isNaN(val)) {
                         root.batteryPercentage = Math.max(0, Math.min(100, val))
                         foundBat = true
-
-                        // Check charging status
-                        try {
-                            var xhrS = new XMLHttpRequest()
-                            xhrS.open("GET", dir + "status", false)
-                            xhrS.send()
-                            if (xhrS.responseText && xhrS.responseText.trim().length > 0) {
-                                var st = xhrS.responseText.trim()
-                                root.batteryStatusText = st
-                                root.isBatteryCharging = (st.toLowerCase() === "charging" || st.toLowerCase() === "full")
-                            }
-                        } catch (e2) {}
-                        break
                     }
                 }
             } catch (e) {}
+
+            if (!foundBat) {
+                // Fallback to energy_now / energy_full
+                try {
+                    var xhrNow = new XMLHttpRequest()
+                    xhrNow.open("GET", dir + "energy_now", false)
+                    xhrNow.send()
+                    var xhrFull = new XMLHttpRequest()
+                    xhrFull.open("GET", dir + "energy_full", false)
+                    xhrFull.send()
+                    if (xhrNow.responseText && xhrFull.responseText) {
+                        var eNow = parseFloat(xhrNow.responseText.trim())
+                        var eFull = parseFloat(xhrFull.responseText.trim())
+                        if (!isNaN(eNow) && !isNaN(eFull) && eFull > 0) {
+                            root.batteryPercentage = Math.max(0, Math.min(100, Math.round((eNow / eFull) * 100)))
+                            foundBat = true
+                        }
+                    }
+                } catch (eFallback) {}
+            }
+
+            if (!foundBat) {
+                // Fallback to charge_now / charge_full
+                try {
+                    var xhrCNow = new XMLHttpRequest()
+                    xhrCNow.open("GET", dir + "charge_now", false)
+                    xhrCNow.send()
+                    var xhrCFull = new XMLHttpRequest()
+                    xhrCFull.open("GET", dir + "charge_full", false)
+                    xhrCFull.send()
+                    if (xhrCNow.responseText && xhrCFull.responseText) {
+                        var cNow = parseFloat(xhrCNow.responseText.trim())
+                        var cFull = parseFloat(xhrCFull.responseText.trim())
+                        if (!isNaN(cNow) && !isNaN(cFull) && cFull > 0) {
+                            root.batteryPercentage = Math.max(0, Math.min(100, Math.round((cNow / cFull) * 100)))
+                            foundBat = true
+                        }
+                    }
+                } catch (eCharge) {}
+            }
+
+            if (foundBat) {
+                root.hasBattery = true
+                // Check charging status
+                try {
+                    var xhrS = new XMLHttpRequest()
+                    xhrS.open("GET", dir + "status", false)
+                    xhrS.send()
+                    if (xhrS.responseText && xhrS.responseText.trim().length > 0) {
+                        var st = xhrS.responseText.trim()
+                        root.batteryStatusText = st
+                        root.isBatteryCharging = (st.toLowerCase() === "charging" || st.toLowerCase() === "full")
+                    }
+                } catch (e2) {}
+                break
+            }
         }
 
         if (!foundBat) {
+            root.hasBattery = false
             var acDirs = [
                 "file:///sys/class/power_supply/ACAD/online",
                 "file:///sys/class/power_supply/AC/online",
                 "file:///sys/class/power_supply/ADP0/online",
-                "file:///sys/class/power_supply/ADP1/online"
+                "file:///sys/class/power_supply/ADP1/online",
+                "file:///sys/class/power_supply/AC0/online"
             ]
             for (var j = 0; j < acDirs.length; j++) {
                 try {
@@ -955,12 +1006,12 @@ Item {
                     RowLayout {
                         spacing: 7
                         Text {
-                            text: "⚡"
+                            text: root.hasBattery ? (root.isBatteryCharging ? "⚡" : "🔋") : (root.isBatteryCharging ? "⚡" : "💻")
                             font.pixelSize: 14
-                            color: root.isBatteryCharging ? "#22c55e" : (root.batteryPercentage <= 20 ? "#ef4444" : "#10b981")
+                            color: root.isBatteryCharging ? "#22c55e" : (root.hasBattery && root.batteryPercentage <= 20 ? "#ef4444" : "#10b981")
                         }
                         Text {
-                            text: root.batteryPercentage + "%"
+                            text: root.hasBattery ? (root.batteryPercentage + "%") : root.batteryStatusText
                             font.family: "Outfit"
                             font.pixelSize: 14
                             font.weight: Font.Medium
