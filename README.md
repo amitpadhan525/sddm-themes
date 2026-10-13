@@ -1,10 +1,56 @@
-# SDDM Themes Collection
+<div align="center">
 
-A collection of modern, beautiful, and highly polished SDDM login themes.
+# 🌌 Modern SDDM Themes Collection
+
+[![GitHub Stars](https://img.shields.io/github/stars/amitpadhan525/sddm-themes?style=for-the-badge&logo=apachespark&color=ffd700)](https://github.com/amitpadhan525/sddm-themes/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/amitpadhan525/sddm-themes?style=for-the-badge&color=89b4fa)](https://github.com/amitpadhan525/sddm-themes/network/members)
+[![Qt Version](https://img.shields.io/badge/Qt-6.x-41CD52?style=for-the-badge&logo=qt&logoColor=white)](https://www.qt.io/)
+[![Display Manager](https://img.shields.io/badge/Display_Manager-SDDM-0078D4?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/sddm/sddm)
+[![Wayland / X11](https://img.shields.io/badge/Display_Server-Wayland_%7C_X11-orange?style=for-the-badge&logo=wayland&logoColor=white)](https://wayland.freedesktop.org/)
+[![License: MIT](https://img.shields.io/github/license/amitpadhan525/sddm-themes?style=for-the-badge&color=f38ba8)](LICENSE)
+
+*A curated suite of modern, glassmorphic, and high-contrast SDDM login greeters engineered for Qt6, Wayland, and X11.*
 
 ---
 
-## 1. GreenShift
+⭐ **If you find these themes aesthetic, please star this repository to support future releases!** ⭐
+
+[⚡ Quick Comparison](#-quick-comparison) • [🧪 Live Preview](#-instant-live-preview-no-install-needed) • [🎨 Themes Showcase](#-themes-showcase) • [⚙️ Installation](installation.md) • [🤝 Collaborators](#-collaborators)
+
+</div>
+
+---
+
+## ⚡ Quick Comparison
+
+| Theme | Aesthetic Style | Primary Accent | Key Typography | Live Test Command |
+| :--- | :--- | :--- | :--- | :--- |
+| **GreenShift** | Cyberpunk Glow | Vivid Green & Charcoal | *Outfit*, *Bebas Neue*, *JetBrainsMono* | `sddm-greeter-qt6 --test-mode --theme GreenShift` |
+| **OrangeShift** | Solar Glassmorphic | Amber & Deep Tangerine | *Outfit*, *Bebas Neue*, *JetBrainsMono* | `sddm-greeter-qt6 --test-mode --theme OrangeShift` |
+| **Golden Horizon** | Sunset Minimalist | Warm Sunset Gold | Centered Modern Geometric | `sddm-greeter-qt6 --test-mode --theme golden-horizon` |
+| **Midnight Current** | Electric Darkwave | Deep Cyan & Navy | High-Contrast Digital Sans | `sddm-greeter-qt6 --test-mode --theme midnight-current` |
+| **Phantom Red** | Tactical Gaming | Crimson & Obsidian Smoke | Bold Digital Font | `sddm-greeter-qt6 --test-mode --theme phantom-red` |
+| **Nebula** | Space Frosted Glass | Deep Violet & Nebula Neon | Sleek Hyprlock-Inspired Sans | `sddm-greeter-qt6 --test-mode --theme nebula` |
+
+---
+
+## 🧪 Instant Live Preview (No Install Needed)
+
+You can preview and test any theme immediately in an isolated nested window without modifying your system SDDM configuration:
+
+```bash
+# Preview via Qt6 greeter test mode:
+sddm-greeter-qt6 --test-mode --theme ./GreenShift
+
+# Or test directly with QML scene viewer:
+qmlscene ./GreenShift/Main.qml
+```
+
+---
+
+## 🎨 Themes Showcase
+
+### 1. GreenShift
 
 **GreenShift** is a sleek, modern glassmorphic SDDM greeter theme featuring vivid green glowing accents and high-contrast typography. It features custom fonts (*Outfit*, *Bebas Neue*, and *JetBrainsMono*), a live clock and date display, smooth input focus, error animations, session/user selection dropdowns, and dedicated power management controls.
 
@@ -14,7 +60,7 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ---
 
-## 2. OrangeShift
+### 2. OrangeShift
 
 **OrangeShift** is a vibrant, modern glassmorphic SDDM greeter theme accented with deep orange and amber tones. Built on Qt6 / QML, it showcases custom typography (*Outfit*, *Bebas Neue*, *JetBrainsMono*), live digital clock, session selector, error shake animations, and power controls.
 
@@ -24,7 +70,7 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ---
 
-## 3. Golden Horizon
+### 3. Golden Horizon
 
 **Golden Horizon** is a warm, elegant SDDM login theme featuring golden sunset tones and high-contrast typography. It showcases a modern centered login card with smooth glassmorphism, bold digital clock display, dynamic greetings, and intuitive power/session selector controls.
 
@@ -34,7 +80,7 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ---
 
-## 4. Midnight Current
+### 4. Midnight Current
 
 **Midnight Current** is a sleek, deep dark blue SDDM login theme with vibrant electrical glowing accents. Designed for modern desktop setups, it includes a clean glassmorphic card layout, sharp digital clock typography, interactive session options, and power controls.
 
@@ -44,7 +90,7 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ---
 
-## 5. Phantom Red
+### 5. Phantom Red
 
 **Phantom Red** is a dark, tactical, gaming-inspired SDDM login theme. It features a symmetric layout with hooded skull soldiers with glowing red eyes, set against a dark smoky background with floating red embers. The UI highlights a glowing massive digital clock, dynamic user greetings, and a bottom control dock.
 
@@ -54,7 +100,7 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ---
 
-## 6. Nebula
+### 6. Nebula
 
 **Nebula** is a modern, futuristic, dark glassmorphic SDDM login theme inspired by Hyprlock. It features sleek neon accents, frosted glass effects, an elegant centered card layout, fluid micro-animations, and custom QML components.
 
@@ -66,7 +112,7 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ## ⚙️ Installation
 
-For step-by-step instructions on how to install and activate any of these themes, please refer to the [Installation Guide](installation.md).
+For step-by-step instructions on how to install, configure, troubleshoot, and activate any of these themes, please refer to the comprehensive [Installation Guide](installation.md).
 
 ---
 
@@ -80,4 +126,3 @@ For step-by-step instructions on how to install and activate any of these themes
 ## 📄 License
 
 This repository is licensed under the [MIT License](LICENSE).
-
