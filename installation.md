@@ -79,8 +79,36 @@ To activate the theme, create or update your SDDM configuration. We recommend us
 ---
 
 ## Testing the Theme
-
+ 
 You can test the installed theme in a window on your current desktop session (without logging out) by running:
 ```bash
 sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/theme-name
 ```
+Or with `qmlscene` directly from the extracted directory:
+```bash
+qmlscene theme-name/Main.qml
+```
+
+---
+
+## 🔧 Troubleshooting
+
+* **Theme not loading / Blank screen**:
+  Ensure Qt6 SVG and declarative modules are installed for your distro:
+  ```bash
+  # Arch Linux
+  sudo pacman -S qt6-5compat qt6-declarative qt6-svg
+  ```
+* **Virtual terminal / Wayland login delay**:
+  Verify `/etc/sddm.conf.d/theme.conf` contains the `GreeterEnvironment` flag:
+  ```ini
+  [General]
+  GreeterEnvironment=QML_XHR_ALLOW_FILE_READ=1
+  ```
+* **High DPI / 4K Scaling**:
+  Enable automatic HiDPI scaling in `/etc/sddm.conf.d/hidpi.conf`:
+  ```ini
+  [Wayland]
+  EnableHiDPI=true
+  ```
+

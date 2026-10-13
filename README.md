@@ -66,10 +66,18 @@ A collection of modern, beautiful, and highly polished SDDM login themes.
 
 ## ⚙️ Installation
 
-For step-by-step instructions on how to install and activate any of these themes, please refer to the [Installation Guide](file:///home/amit/github/sddm-themes/installation.md).
+For step-by-step instructions on how to install and activate any of these themes, please refer to the [Installation Guide](installation.md).
+
+---
+
+## 🤝 Collaborators
+
+- **AMIT PADHAN** ([@amitpadhan525](https://github.com/amitpadhan525)) — Creator & Lead UI Designer
+- **Aditya R. Satapathy** ([@Myparadox-creator](https://github.com/Myparadox-creator)) — Testing, Validation & Contribution
 
 ---
 
 ## 📄 License
 
 This repository is licensed under the [MIT License](LICENSE).
+
