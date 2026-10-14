@@ -135,6 +135,18 @@ See [COMMUNITY_SHOWCASE.md](COMMUNITY_SHOWCASE.md) for ready-to-post Reddit (`r/
 
 ---
 
+## ⭐ Support & Stargazers
+
+If you enjoy these themes or use them in your desktop rice, please consider **giving this repo a star**! It directly motivates future updates, Qt6 performance improvements, and new theme designs.
+
+[![Star on GitHub](https://img.shields.io/badge/⭐_Star_This_Repository-sddm--themes-ffd700?style=for-the-badge&logo=github)](https://github.com/amitpadhan525/sddm-themes)
+
+<br/>
+
+[![Stargazers repo roster for @amitpadhan525/sddm-themes](https://reporoster.com/stars/amitpadhan525/sddm-themes)](https://github.com/amitpadhan525/sddm-themes/stargazers)
+
+---
+
 ## 📄 License
 
 This repository is licensed under the [MIT License](LICENSE).
