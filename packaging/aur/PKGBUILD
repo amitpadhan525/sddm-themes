@@ -1,0 +1,27 @@
+# Maintainer: AMIT PADHAN <amitpadhan525@users.noreply.github.com>
+pkgname=sddm-themes-collection-git
+pkgver=1.1.1
+pkgrel=1
+pkgdesc="A curated suite of modern, glassmorphic, and high-contrast SDDM login themes for Qt6"
+arch=('any')
+url="https://github.com/amitpadhan525/sddm-themes"
+license=('MIT')
+depends=('sddm' 'qt6-5compat' 'qt6-declarative' 'qt6-svg')
+makedepends=('git')
+provides=('sddm-themes-collection')
+conflicts=('sddm-themes-collection')
+source=("git+https://github.com/amitpadhan525/sddm-themes.git")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/sddm-themes"
+  printf "1.1.1.r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+package() {
+  cd "$srcdir/sddm-themes"
+  install -d "$pkgdir/usr/share/sddm/themes"
+  cp -r themes/* "$pkgdir/usr/share/sddm/themes/"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}

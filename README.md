@@ -114,6 +114,18 @@ qmlscene ./GreenShift/Main.qml
 
 For step-by-step instructions on how to install, configure, troubleshoot, and activate any of these themes, please refer to the comprehensive [Installation Guide](installation.md).
 
+### 📦 Arch User Repository (AUR)
+Arch Linux and EndeavourOS users can build and install the entire suite using the provided PKGBUILD:
+```bash
+cd packaging/aur
+makepkg -si
+```
+
+---
+
+## 🌟 Community & Showcase
+See [COMMUNITY_SHOWCASE.md](COMMUNITY_SHOWCASE.md) for ready-to-post Reddit (`r/unixporn`), Arch Linux forum templates, and KDE Store publishing instructions.
+
 ---
 
 ## 🤝 Collaborators
