@@ -36,10 +36,13 @@
 
 ## 🧪 Instant Live Preview (No Install Needed)
 
-You can preview and test any theme immediately in an isolated nested window without modifying your system SDDM configuration:
+You can preview and test any theme immediately in an isolated nested window without modifying your system SDDM configuration or logging out:
 
 ```bash
-# Preview via Qt6 greeter test mode:
+# 1-Click Interactive Test Runner (auto-detects available greeter backend):
+./scripts/test-theme-nesting.sh GreenShift
+
+# Or preview via Qt6 greeter test mode directly:
 sddm-greeter-qt6 --test-mode --theme ./GreenShift
 
 # Or test directly with QML scene viewer:
